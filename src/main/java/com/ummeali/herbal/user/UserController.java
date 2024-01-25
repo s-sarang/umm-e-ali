@@ -17,11 +17,6 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("/signup")
-    public String showSignUpForm() {
-        return "user/sign-up";
-    }
-
     @PostMapping("/create")
     public String create(Model model, User user) {
         final int userId = service.create(user);
