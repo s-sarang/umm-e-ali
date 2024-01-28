@@ -2,7 +2,7 @@ package com.ummeali.herbal.order;
 
 
 import com.ummeali.herbal.basket.BasketRepository;
-import com.ummeali.herbal.user.UserRepository;
+import com.ummeali.herbal.user.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.List;
 public class OrderService {
 
     private BasketRepository basketRepository;
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
     private OrderRepository orderRepository;
 
 
-    public OrderService(OrderRepository orderRepository, BasketRepository basketRepository, UserRepository userRepository){
+    public OrderService(OrderRepository orderRepository, BasketRepository basketRepository, CustomerRepository customerRepository){
         this.basketRepository = basketRepository;
-        this.userRepository = userRepository;
+        this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
     }
 
@@ -25,7 +25,7 @@ public class OrderService {
         if(order.getBasketId() == null){
             throw new IllegalArgumentException("Invalid basket");
         }
-        if(order.getUserId() == null || !userRepository.existsById(order.getUserId())){
+        if(order.getUserId() == null || !customerRepository.existsById(order.getUserId())){
             throw new IllegalArgumentException("Invalid user");
         }
         if(orderRepository.existsByBasketId(order.getBasketId())){

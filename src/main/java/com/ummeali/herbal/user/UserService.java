@@ -5,24 +5,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
 
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public UserService(CustomerRepository customerRepository){
+        this.customerRepository = customerRepository;
     }
 
     /**
      * Create a new user.
      *
-     * @param user
+     * @param customer
      */
-    public int create(User user){
-        User duplicateUser = userRepository.findByUserName(user.getUserName()); // Check if username is not already taken.
-        if(duplicateUser != null){ // If username is already taken, then send exception message to user.
+    public int create(Customer customer){
+        boolean duplicateUser = customerRepository.existsByEmailId(customer.getEmailId()); // Check if username is not already taken.
+        if(duplicateUser){ // If username is already taken, then send exception message to user.
             throw new IllegalArgumentException("Username is already taken. Please try another one.");
         }
-        userRepository.save(user); // Persist the user in database.
-        return userRepository.findByUserName(user.getUserName()).getUserId(); // Return userId.
+        customerRepository.save(customer); // Persist the user in database.
+        return customerRepository.findByEmailId(customer.getEmailId()).getCustomerId(); // Return userId.
     }
 
     /**
@@ -30,31 +30,31 @@ public class UserService {
      *
      * @param userId
      */
-    public User get(int userId){
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User id not found"));
+    public Customer get(int userId){
+        return customerRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User id not found"));
     }
 
     /**
      * Updates user information.
      *
-     * @param user
+     * @param customer
      */
-    public void update(User user){
-        User updatedUser = get(user.getUserId()); // Retrieve user and update details.
-        updatedUser.setTitle(user.getTitle());
-        updatedUser.setFirstName(user.getFirstName());
-        updatedUser.setLastName(user.getLastName());
-        updatedUser.setDateOfBirth(user.getDateOfBirth());
-        updatedUser.setUserName(user.getUserName());
-        updatedUser.setPassword(user.getPassword());
-        updatedUser.setTelephone(user.getTelephone());
-        updatedUser.setMobile(user.getMobile());
-        updatedUser.setEmail(user.getEmail());
-        updatedUser.setAddressLine1(user.getAddressLine1());
-        updatedUser.setAddressLine2(user.getAddressLine2());
-        updatedUser.setAddressLine3(user.getAddressLine3());
-        updatedUser.setCountry(user.getCountry());
-        userRepository.save(updatedUser); // Save user with updated details.
+    public void update(Customer customer){
+        Customer updatedCustomer = get(customer.getCustomerId()); // Retrieve user and update details.
+        updatedCustomer.setTitle(customer.getTitle());
+        updatedCustomer.setFirstName(customer.getFirstName());
+        updatedCustomer.setLastName(customer.getLastName());
+        updatedCustomer.setDateOfBirth(customer.getDateOfBirth());
+        updatedCustomer.setUserName(customer.getUserName());
+        updatedCustomer.setPassword(customer.getPassword());
+        updatedCustomer.setTelephone(customer.getTelephone());
+        updatedCustomer.setMobile(customer.getMobile());
+        updatedCustomer.setEmailId(customer.getEmailId());
+        updatedCustomer.setAddressLine1(customer.getAddressLine1());
+        updatedCustomer.setAddressLine2(customer.getAddressLine2());
+        updatedCustomer.setAddressLine3(customer.getAddressLine3());
+        updatedCustomer.setCountry(customer.getCountry());
+        customerRepository.save(updatedCustomer); // Save user with updated details.
     }
 
     /**
@@ -63,6 +63,6 @@ public class UserService {
      * @param userId
      */
     public void delete(int userId){
-        userRepository.deleteById(userId); // Delete user
+        customerRepository.deleteById(userId); // Delete user
     }
 }

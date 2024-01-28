@@ -1,20 +1,23 @@
 package com.ummeali.herbal;
 
 public class Navigate {
+
+    public static final String REDIRECT = "redirect:";
+
     public static final String toHomepage() {
-        return "store/home";
+        return "index";
     }
 
     public static final String toProducts() {
-        return "store/products";
+        return "products";
     }
 
     public static final String toLogin() {
-        return "user/login";
+        return "login";
     }
 
     public static final String toSignUpForm() {
-        return "user/sign-up";
+        return "signup";
     }
 
     public static final String toProfile() {
@@ -22,14 +25,14 @@ public class Navigate {
     }
 
     public static final String toBasket() {
-        return "user/basket";
+        return "shopping-cart";
     }
 
     public static final String toPayments() {
-        return "user/payment";
+        return "payment";
     }
 
     public static final String toOrder() {
-        return "user/order";
+        return "order";
     }
 }

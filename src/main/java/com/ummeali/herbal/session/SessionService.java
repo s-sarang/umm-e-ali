@@ -1,17 +1,17 @@
 package com.ummeali.herbal.session;
 
-import com.ummeali.herbal.user.User;
-import com.ummeali.herbal.user.UserRepository;
+import com.ummeali.herbal.user.Customer;
+import com.ummeali.herbal.user.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SessionService {
 
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
     private SessionRepository sessionRepository;
 
-    public SessionService(UserRepository userRepository, SessionRepository sessionRepository){
-        this.userRepository = userRepository;
+    public SessionService(CustomerRepository customerRepository, SessionRepository sessionRepository){
+        this.customerRepository = customerRepository;
         this.sessionRepository = sessionRepository;
     }
 
@@ -19,15 +19,15 @@ public class SessionService {
         if(username == null || password == null){
             throw new IllegalArgumentException("Please enter username and password");
         }
-        User user = userRepository.findByUserName(username);
-        if(user == null || !password.equals(user.getPassword())){
+        Customer customer = customerRepository.findByEmailId(username);
+        if(customer == null || !password.equals(customer.getPassword())){
             throw new IllegalArgumentException("Username or password is invalid.");
         }
         sessionRepository.save(Session.builder()
-                        .userId(user.getUserId())
+                        .userId(customer.getCustomerId())
                         .status("Logged In")
                 .build());
-        return sessionRepository.findByUserId(user.getUserId()).getStatus();
+        return sessionRepository.findByUserId(customer.getCustomerId()).getStatus();
     }
 
     public String logout(Integer userId){

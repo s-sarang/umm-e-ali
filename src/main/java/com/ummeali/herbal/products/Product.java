@@ -18,7 +18,7 @@ public class Product {
         // NO-OPS - required for Spring JPA.
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE) @Column(name = "productId")
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer productId; // Unique identifier for a product.
 
     @Column(name = "productName")

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BasketRepository extends JpaRepository<Basket, Integer> {
-    Basket findByUserId(int userId);
+    Basket findByCustomerId(int customerId);
 }

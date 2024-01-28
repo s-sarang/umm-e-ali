@@ -1,6 +1,8 @@
 package com.ummeali.herbal.session;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -17,6 +19,7 @@ public class Session {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer sessionId;
     private Integer userId;
     private String status;

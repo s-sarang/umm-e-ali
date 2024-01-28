@@ -1,6 +1,8 @@
 package com.ummeali.herbal.basket;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -19,15 +21,16 @@ public class Basket {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer basketId; // Unique identifier for a basket.
-    private Integer userId; // User associated with the basket.
+    private Integer customerId; // User associated with the basket.
     @OneToMany
     private List<ProductQuantity> productQuantity; // Product and quantity put in the basket by user.
     private String status; // Status of basket, e.g. Pending (which means the basket has yet to be checked out by user) or Paid (which means the basked is now closed and it is no longer modifiable).
 
-    public Basket(Integer basketId, Integer userId, List<ProductQuantity> productQuantity, String status) { // All argument constructor
+    public Basket(Integer basketId, Integer customerId, List<ProductQuantity> productQuantity, String status) { // All argument constructor
         this.basketId = basketId;
-        this.userId = userId;
+        this.customerId = customerId;
         this.productQuantity = productQuantity;
         this.status = status;
     }
@@ -42,12 +45,12 @@ public class Basket {
         this.basketId = basketId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCustomerId(Integer userId) {
+        this.customerId = userId;
     }
 
     public List<ProductQuantity> getProductQuantity() {
@@ -71,19 +74,19 @@ public class Basket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Basket basket = (Basket) o;
-        return userId == basket.userId && Objects.equals(basketId, basket.basketId) && Objects.equals(productQuantity, basket.productQuantity) && Objects.equals(status, basket.status);
+        return customerId == basket.customerId && Objects.equals(basketId, basket.basketId) && Objects.equals(productQuantity, basket.productQuantity) && Objects.equals(status, basket.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(basketId, userId, productQuantity, status);
+        return Objects.hash(basketId, customerId, productQuantity, status);
     }
 
     @Override
     public String toString() { // This is used to prInteger value of object fields rather than object reference when logging.
         return "Basket{" +
                 "basketId=" + basketId +
-                ", userId=" + userId +
+                ", userId=" + customerId +
                 ", productQuantity=" + productQuantity +
                 ", status='" + status + '\'' +
                 '}';

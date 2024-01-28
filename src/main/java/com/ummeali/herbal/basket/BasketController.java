@@ -17,9 +17,9 @@ public class BasketController {
         this.service = service;
     }
 
-    @PostMapping("/{userId}/basket")
-    public Integer create(Model model, Integer userId){
-        final Integer basketId = service.create(userId);
+    @PostMapping("/{customerId}/basket")
+    public Integer create(Model model, Integer customerId){
+        final Integer basketId = service.create(customerId);
         model.addAttribute("basketId", basketId);
         return basketId;
     }
