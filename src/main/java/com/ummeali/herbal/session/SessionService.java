@@ -15,7 +15,15 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public String login(String username, String password){
+    public Session guestSession(){
+        sessionRepository.save(Session.builder()
+                .customerId(0)
+                .status("Guest")
+                .build());
+        return sessionRepository.findByCustomerId(0);
+    }
+
+    public Session login(String username, String password){
         if(username == null || password == null){
             throw new IllegalArgumentException("Please enter username and password");
         }
@@ -24,19 +32,19 @@ public class SessionService {
             throw new IllegalArgumentException("Username or password is invalid.");
         }
         sessionRepository.save(Session.builder()
-                        .userId(customer.getCustomerId())
+                        .customerId(customer.getCustomerId())
                         .status("Logged In")
                 .build());
-        return sessionRepository.findByUserId(customer.getCustomerId()).getStatus();
+        sessionRepository.deleteById(0);
+        return sessionRepository.findByCustomerId(customer.getCustomerId());
     }
 
-    public String logout(Integer userId){
-        if(userId == null){
+    public Session logout(Integer customerId){
+        if(customerId == null){
             throw new IllegalArgumentException("Invalid user");
         }
-        Session session = sessionRepository.findByUserId(userId);
-        session.setStatus("Logged Out");
-        sessionRepository.save(session);
-        return sessionRepository.findByUserId(userId).getStatus();
+        Session session = sessionRepository.findByCustomerId(customerId);
+        sessionRepository.deleteById(session.getSessionId());
+        return guestSession();
     }
 }

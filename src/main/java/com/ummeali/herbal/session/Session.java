@@ -1,5 +1,6 @@
 package com.ummeali.herbal.session;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,12 +22,13 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer sessionId;
-    private Integer userId;
+    @Column(unique = true)
+    private Integer customerId;
     private String status;
 
-    public Session(Integer sessionId, Integer userId, String status) {
+    public Session(Integer sessionId, Integer customerId, String status) {
         this.sessionId = sessionId;
-        this.userId = userId;
+        this.customerId = customerId;
         this.status = status;
     }
 
@@ -38,12 +40,12 @@ public class Session {
         this.sessionId = sessionId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCustomerId(Integer userId) {
+        this.customerId = userId;
     }
 
     public String getStatus() {
@@ -59,19 +61,19 @@ public class Session {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Session session = (Session) o;
-        return Objects.equals(sessionId, session.sessionId) && Objects.equals(userId, session.userId) && Objects.equals(status, session.status);
+        return Objects.equals(sessionId, session.sessionId) && Objects.equals(customerId, session.customerId) && Objects.equals(status, session.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sessionId, userId, status);
+        return Objects.hash(sessionId, customerId, status);
     }
 
     @Override
     public String toString() {
         return "Session{" +
                 "sessionId=" + sessionId +
-                ", userId=" + userId +
+                ", customerId=" + customerId +
                 ", status='" + status + '\'' +
                 '}';
     }

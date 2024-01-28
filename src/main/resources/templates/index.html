@@ -17,7 +17,11 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="products.html" th:href="@{/product/list}">Products</a></li>
                     <li class="nav-item"><a class="nav-link" href="shopping-cart.html" th:href="@{/user/{customerId}/basket(customerId=${customerId})}">Shopping Cart</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html" th:href="@{/user/auth/login}">Log in</a></li>
+                    <li class="nav-item" th:switch="${customerSession?.status}">
+                        <a class="nav-link" href="index.html" th:href="@{'/user/auth/logout?customerId=' + ${customerSession?.customerId}}" th:case="'Logged In'">Log Out</a>
+                        <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="'Guest'">Log In</a>
+                        <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="*">Log In</a>
+                    </li>
                     <li class="nav-item"></li>
                 </ul><a class="btn btn-secondary shadow" role="button" href="signup.html" th:href="@{/user/signup}">Sign up</a>
             </div>

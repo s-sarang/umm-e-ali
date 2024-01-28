@@ -22,20 +22,25 @@ public class SessionController {
         this.service = service;
     }
 
+    @GetMapping("/login")
+    public String loginPage(){
+        return Navigate.toLogin();
+    }
+
     @PostMapping("/login")
-    public String login(Model model, Principal principal, Credentials credentials){
+    public String login(Model model, Credentials credentials){
         if(credentials.getUsername() == null || credentials.getPassword() == null){
             return Navigate.toLogin();
         }
-        service.login(credentials.getUsername(), credentials.getPassword());
+        Session session = service.login(credentials.getUsername(), credentials.getPassword());
+        model.addAttribute("customerSession", session);
         return Navigate.toHomepage();
     }
 
     @GetMapping("/logout")
-    public String logout(Model model, Principal principal, Integer userId){
-        service.logout(userId);
-        return REDIRECT + Navigate.toHomepage();
+    public String logout(Model model, Integer customerId){
+        Session session = service.logout(customerId);
+        model.addAttribute("customerSession", session);
+        return Navigate.toHomepage();
     }
-
-
 }
