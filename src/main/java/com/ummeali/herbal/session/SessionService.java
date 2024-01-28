@@ -2,6 +2,7 @@ package com.ummeali.herbal.session;
 
 import com.ummeali.herbal.user.Customer;
 import com.ummeali.herbal.user.CustomerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,7 @@ public class SessionService {
         return sessionRepository.findByCustomerId(0);
     }
 
+    @Transactional
     public Session login(String username, String password){
         if(username == null || password == null){
             throw new IllegalArgumentException("Please enter username and password");
@@ -35,16 +37,16 @@ public class SessionService {
                         .customerId(customer.getCustomerId())
                         .status("Logged In")
                 .build());
-        sessionRepository.deleteById(0);
+        sessionRepository.deleteByCustomerId(0);
         return sessionRepository.findByCustomerId(customer.getCustomerId());
     }
 
+    @Transactional
     public Session logout(Integer customerId){
         if(customerId == null){
-            throw new IllegalArgumentException("Invalid user");
+            throw new IllegalArgumentException("Invalid customer");
         }
-        Session session = sessionRepository.findByCustomerId(customerId);
-        sessionRepository.deleteById(session.getSessionId());
+        sessionRepository.deleteByCustomerId(customerId);
         return guestSession();
     }
 }
