@@ -34,6 +34,7 @@ public class SessionController {
         }
         Session session = service.login(credentials.getUsername(), credentials.getPassword());
         model.addAttribute("customerSession", session);
+        model.addAttribute("customerId", session.getCustomerId());
         return Navigate.toHomepage();
     }
 
@@ -41,6 +42,7 @@ public class SessionController {
     public String logout(Model model, Integer customerId){
         Session session = service.logout(customerId);
         model.addAttribute("customerSession", session);
+        model.addAttribute("customerId", 0);
         return Navigate.toHomepage();
     }
 }

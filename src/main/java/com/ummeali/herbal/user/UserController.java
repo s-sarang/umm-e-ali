@@ -1,16 +1,11 @@
 package com.ummeali.herbal.user;
 
 import com.ummeali.herbal.Navigate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import static com.ummeali.herbal.Navigate.REDIRECT;
 
 @Controller
 @RequestMapping("/user")
@@ -34,9 +29,9 @@ public class UserController {
         return Navigate.toLogin();
     }
 
-    @GetMapping("/{userId}")
-    public String showUserDetailsForm(Model model, @PathVariable Integer userId) {
-        final Customer customer = service.get(userId);
+    @GetMapping("/{customerId}")
+    public String showUserDetailsForm(Model model, Integer customerId) {
+        final Customer customer = service.get(customerId);
         model.addAttribute("user", customer);
         return "edit-user-details";
     }

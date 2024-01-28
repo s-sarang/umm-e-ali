@@ -36,7 +36,7 @@ public class BasketService {
      * @return
      */
     public int create(final int userId){
-        validateUser(userId); // Check that the user is a valid user.
+        //validateUser(userId); // Check that the user is a valid user.
         Basket userBasket = basketRepository.findByCustomerId(userId); // Check if user has an existing basket. The user can only have 1 basket at a time.
         if(userBasket != null){ // If user has an existing basket, then return the basket id as there is no need to create a new one.
             return userBasket.getBasketId();
@@ -56,18 +56,21 @@ public class BasketService {
     /**
      * Retrieve the user's basket.
      *
-     * @param userId
-     * @param basketId
+     * @param customerId
      */
-    public Basket get(final int userId, final int basketId){
-        validateUser(userId); // Check that the user is a valid user.
+    public Basket get(final Integer customerId){
+        if(customerId == 0){
+            Basket guestBasket = basketRepository.findByCustomerId(0);
+            if(guestBasket == null){  // If no basket is present for the user, then create a new empty basket.
+                int newGuestBasket = create(0);
+                return basketRepository.findById(newGuestBasket)
+                        .orElseThrow(() -> new RuntimeException("Failed to retrieve basket for customer: " + customerId)); // Edge case - if both retrieve and create fails. This is unlikely and unreachable.
+            }
+            return guestBasket;
+        }
+
         return basketRepository // Retrieve and return the user's basket.
-                .findById(basketId)
-                .or(() -> { // If no basket is present for the user, then create a new empty basket.
-                    int newBasketId = create(userId);
-                    return basketRepository.findById(newBasketId);
-                })
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve basket: " + basketId)); // Edge case - if both retrieve and create fails. This is unlikely and unreachable.
+                .findByCustomerId(customerId);
     }
 
     /**
@@ -77,7 +80,7 @@ public class BasketService {
      * @param quantity
      */
     public void update(int basketId, final int userId, final int productId, final int quantity){
-        Basket userBasket = get(userId, basketId);
+        Basket userBasket = get(userId);
         if("Paid".equals(userBasket.getStatus())){ // Check basket status. If basket status is Paid, that means the user has checked out and the basket can no longer be modified.
             throw new RuntimeException("The basket is already checked out.");
         }
@@ -112,7 +115,7 @@ public class BasketService {
      * @param userId
      */
     public void delete(int basketId, final int userId){
-        Basket userBasket = get(userId, basketId);
+        Basket userBasket = get(userId);
         if("Paid".equals(userBasket.getStatus())){
             basketRepository.delete(userBasket);
         }
@@ -121,11 +124,11 @@ public class BasketService {
     /**
      * Check given user is valid.
      *
-     * @param userId
+     * @param customerId
      */
-    private void validateUser(final int userId){
+    private void validateUser(final Integer customerId){
         customerRepository
-                .findById(userId)
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve user: " + userId));
+                .findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Failed to retrieve user: " + customerId));
     }
 }

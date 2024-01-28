@@ -4,6 +4,7 @@ import com.ummeali.herbal.Navigate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,9 +25,9 @@ public class BasketController {
         return basketId;
     }
 
-    @GetMapping("/{userId}/basket/{basketId}")
-    public String get(Model model, Integer userId, Integer basketId){
-        model.addAttribute("basket", service.get(userId, basketId));
+    @GetMapping("/{customerId}/basket")
+    public String get(Model model, @PathVariable Integer customerId){
+        model.addAttribute("basket", service.get(customerId));
         return Navigate.toBasket();
     }
 
