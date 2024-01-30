@@ -13,14 +13,17 @@
 <body>
     <!-- Start: Navbar Centered Links -->
     <nav class="navbar navbar-expand-md sticky-top navbar-shrink py-3 navbar-light" id="mainNav" data-bs-theme="light">
-        <div class="container"><a class="navbar-brand d-flex align-items-center" href="index.html"><img class="rounded-circle img-fluid" src="../static/assets/img/brands/ua-herbal-logo.jpeg" width="55" height="55"><span class="text-secondary" style="padding: 25px;">UA Herbal</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="index.html" th:href="@{/store/home}"><img class="rounded-circle img-fluid" src="../static/assets/img/brands/ua-herbal-logo.jpeg" th:src="@{/assets/img/brands/ua-herbal-logo.jpeg}" width="55" height="55"><span class="text-secondary" style="padding: 25px;">UA Herbal</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="shopping-cart.html">Shopping Cart</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html">Log in</a></li>
-                    <li class="nav-item"></li>
-                </ul><a class="btn btn-secondary shadow" role="button" href="signup.html">Sign up</a>
+                    <li class="nav-item"><a class="nav-link active" href="products.html" th:href="@{/product/list(customerId=${customerId})}">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shopping-cart.html" th:href="@{/user/{customerId}/basket(customerId=(${customerId == null} ? 0 : ${customerId}))}">Shopping Cart</a></li>
+                    <li class="nav-item" th:switch="${customerSession?.status}">
+                        <a class="nav-link" href="index.html" th:href="@{'/user/auth/logout?customerId=' + ${customerSession?.customerId}}" th:case="'Logged In'">Log Out</a>
+                        <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="'Guest'">Log In</a>
+                        <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="*">Log In</a>
+                    </li>
+                </ul><a class="btn btn-secondary shadow" role="button" href="signup.html" th:href="@{/user/signup}" th:unless="${customerSession?.status == 'Logged In'}">Sign up</a>
             </div>
         </div>
     </nav><!-- End: Navbar Centered Links -->

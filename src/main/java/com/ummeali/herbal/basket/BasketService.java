@@ -1,5 +1,7 @@
 package com.ummeali.herbal.basket;
 
+import com.ummeali.herbal.products.Product;
+import com.ummeali.herbal.products.ProductRepository;
 import com.ummeali.herbal.user.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,12 @@ public class BasketService {
 
     private BasketRepository basketRepository;
     private CustomerRepository customerRepository;
+    private ProductRepository productRepository;
 
-    public BasketService(BasketRepository basketRepository, CustomerRepository customerRepository){
+    public BasketService(BasketRepository basketRepository, CustomerRepository customerRepository, ProductRepository productRepository){
         this.basketRepository = basketRepository;
         this.customerRepository = customerRepository;
+        this.productRepository = productRepository;
     }
 
     /**
@@ -38,13 +42,14 @@ public class BasketService {
     public int create(final int userId){
         //validateUser(userId); // Check that the user is a valid user.
         Basket userBasket = basketRepository.findByCustomerId(userId); // Check if user has an existing basket. The user can only have 1 basket at a time.
-        if(userBasket != null){ // If user has an existing basket, then return the basket id as there is no need to create a new one.
+        if(userBasket != null && "Pending".equals(userBasket.getStatus())){ // If user has an existing basket, then return the basket id as there is no need to create a new one.
             return userBasket.getBasketId();
         }
         Basket emptyBasket = Basket.builder() // Create an empty basket for the user.
                 .customerId(userId)
+                .productQuantity(new ArrayList<>())
                 .status("Pending")
-                .basketId(null).build();
+                .build();
         basketRepository.save(emptyBasket); // Persist the empty basket in database.
         Basket userEmptyBasket = basketRepository.findByCustomerId(userId); // Retrieve the empty basket from database.
         if(userEmptyBasket == null){ // Edge case - check that the empty basket is associated with the user and successfully retrieved.
@@ -68,9 +73,13 @@ public class BasketService {
             }
             return guestBasket;
         }
-
-        return basketRepository // Retrieve and return the user's basket.
-                .findByCustomerId(customerId);
+        Basket customerBasket = basketRepository.findByCustomerId(customerId); // Retrieve and return the user's basket.
+        if(customerBasket == null){
+            int newCustomerBasket = create(customerId);
+            return basketRepository.findById(newCustomerBasket)
+                    .orElseThrow(() -> new RuntimeException("Failed to retrieve basket for customer: " + customerId)); // Edge case - if both retrieve and create fails. This is unlikely and unreachable.
+        }
+        return customerBasket;
     }
 
     /**
@@ -79,7 +88,7 @@ public class BasketService {
      * @param productId
      * @param quantity
      */
-    public void update(int basketId, final int userId, final int productId, final int quantity){
+    public Basket update(int basketId, final int userId, final int productId, final int quantity){
         Basket userBasket = get(userId);
         if("Paid".equals(userBasket.getStatus())){ // Check basket status. If basket status is Paid, that means the user has checked out and the basket can no longer be modified.
             throw new RuntimeException("The basket is already checked out.");
@@ -91,11 +100,17 @@ public class BasketService {
         if(quantity == 0){ // If user reduces the quantity of given product to 0, then remove the product from the basket.
             productsInBasket.removeIf(productQuantity -> productId == productQuantity.getProductId());
         } else if(quantity > 0){ // If quantity of given product is non-zero, then update quantity value of given product in the basket.
-            productsInBasket.forEach(productQuantity -> {
-                if(productId == productQuantity.getProductId()){
-                    productQuantity.setQuantity(quantity);
-                }
-            });
+            boolean isProductInBasket = productsInBasket.stream().anyMatch(productQuantity -> productId == productQuantity.getProductId());
+            if(productsInBasket.isEmpty() || !isProductInBasket){
+                productsInBasket.add(new ProductQuantity(userBasket, productId, quantity));
+            }else{
+                productsInBasket.forEach(productQuantity -> {
+                    if(productId == productQuantity.getProductId()){
+                        productQuantity.setQuantity(productQuantity.getQuantity() + quantity);
+                    }
+                });
+            }
+
         } else { // Edge case - if negative quantity is specified, then it is a bad request.
             throw new IllegalArgumentException("Quantity of product cannot be negative.");
         }
@@ -105,7 +120,25 @@ public class BasketService {
                 .productQuantity(productsInBasket)
                 .status("Pending")
                 .build();
-        basketRepository.save(updatedBasket); // Persist the updated basket in the database.
+        return basketRepository.save(updatedBasket); // Persist the updated basket in the database.
+    }
+
+    public CheckoutItems getCheckoutItems(Basket basket){
+        float checkoutTotal = 0.0f;
+        final List<Item> items = new ArrayList<>();
+        for (ProductQuantity productQuantity : basket.getProductQuantity()) {
+            final Product product = productRepository.findById(productQuantity.getProductId()).get();
+            final Item item = new Item();
+            item.setProductId(product.getProductId());
+            item.setProductImageUrl(product.getProductImageUrl());
+            item.setProductName(product.getProductName());
+            item.setPrice("₹ " + product.getPrice());
+            item.setQuantity(productQuantity.getQuantity());
+            item.setTotal(product.getPrice() * (float) productQuantity.getQuantity());
+            items.add(item);
+            checkoutTotal += (product.getPrice() * (float) productQuantity.getQuantity());
+        }
+        return new CheckoutItems("₹ " + checkoutTotal, items);
     }
 
     /**

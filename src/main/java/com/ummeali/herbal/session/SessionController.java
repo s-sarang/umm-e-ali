@@ -16,14 +16,17 @@ import static com.ummeali.herbal.Navigate.REDIRECT;
 @RequestMapping("/user/auth")
 public class SessionController {
 
+    private SessionManager sessionManager;
     private SessionService service;
 
-    public SessionController(SessionService service){
+    public SessionController(SessionManager sessionManager, SessionService service){
+        this.sessionManager = sessionManager;
         this.service = service;
     }
 
     @GetMapping("/login")
-    public String loginPage(){
+    public String loginPage(Model model){
+        sessionManager.verify(model, null);
         return Navigate.toLogin();
     }
 
@@ -33,16 +36,14 @@ public class SessionController {
             return Navigate.toLogin();
         }
         Session session = service.login(credentials.getUsername(), credentials.getPassword());
-        model.addAttribute("customerSession", session);
-        model.addAttribute("customerId", session.getCustomerId());
+        sessionManager.verify(model, session.getCustomerId());
         return Navigate.toHomepage();
     }
 
     @GetMapping("/logout")
     public String logout(Model model, Integer customerId){
         Session session = service.logout(customerId);
-        model.addAttribute("customerSession", session);
-        model.addAttribute("customerId", 0);
+        sessionManager.verify(model, null);
         return Navigate.toHomepage();
     }
 }

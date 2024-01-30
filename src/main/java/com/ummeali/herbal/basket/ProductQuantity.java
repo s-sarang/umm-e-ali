@@ -2,12 +2,17 @@ package com.ummeali.herbal.basket;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.util.Objects;
 
 @Entity
 public class ProductQuantity {
 
+    @ManyToOne
+    @JoinColumn(name="basketId")
+    private Basket basket;
     @Id
     private Integer productId;
     private Integer quantity;
@@ -16,7 +21,8 @@ public class ProductQuantity {
         // NO-OPS
     }
 
-    public ProductQuantity(Integer productId, Integer quantity) {
+    public ProductQuantity(Basket basket, Integer productId, Integer quantity) {
+        this.basket = basket;
         this.productId = productId;
         this.quantity = quantity;
     }
@@ -37,6 +43,14 @@ public class ProductQuantity {
         this.quantity = quantity;
     }
 
+    public Basket getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Basket basket) {
+        this.basket = basket;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,7 +65,7 @@ public class ProductQuantity {
     }
 
     @Override
-    public String toString() { // This is used to print value of object fields rather than object reference.
+    public String toString() {
         return "ProductQuantity{" +
                 "productId=" + productId +
                 ", quantity=" + quantity +

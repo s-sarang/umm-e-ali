@@ -8,19 +8,43 @@
     <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css" th:href="@{/assets/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../static/assets/css/toolkit.min.css" th:href="@{/assets/css/toolkit.min.css}">
     <link rel="stylesheet" href="../static/assets/css/Inter.css" th:href="@{/assets/css/Inter.css}">
+    <link rel="stylesheet" href="../static/assets/css/glightbox.min.css" th:href="@{/assets/css/glightbox.min.css}">
+    <script>
+        function setQuantity(upordown) {
+            var quantity = document.getElementById('quantity');
+
+            if (quantity.value > 1) {
+                if (upordown == 'up'){++document.getElementById('quantity').value;}
+                else if (upordown == 'down'){--document.getElementById('quantity').value;}}
+            else if (quantity.value == 1) {
+                if (upordown == 'up'){++document.getElementById('quantity').value;}}
+            else
+            {document.getElementById('quantity').value=1;}
+        }
+    </script>
 </head>
 
 <body>
+    <div>
+        <p th:text="'Customer Session: ' + ${customerSession}"></p>
+        <p th:text="'Customer Id: ' + ${customerId}"></p>
+        <p th:text="'Basket: ' + ${basket}"></p>
+        <p th:text="'Basket Id: ' + ${basketId}"></p>
+        <p th:text="'Products: ' + ${products}"></p>
+    </div>
     <!-- Start: Navbar Centered Links -->
     <nav class="navbar navbar-expand-md sticky-top navbar-shrink py-3 navbar-light" id="mainNav" data-bs-theme="light">
-        <div class="container"><a class="navbar-brand d-flex align-items-center" href="index.html"><img class="rounded-circle img-fluid" src="../static/assets/img/brands/ua-herbal-logo.jpeg" width="55" height="55"><span class="text-secondary" style="padding: 25px;">UA Herbal</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="index.html" th:href="@{/store/home}"><img class="rounded-circle img-fluid" src="../static/assets/img/brands/ua-herbal-logo.jpeg" th:src="@{/assets/img/brands/ua-herbal-logo.jpeg}" width="55" height="55"><span class="text-secondary" style="padding: 25px;">UA Herbal</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="shopping-cart.html">Shopping Cart</a></li>
-                    <li class="nav-item"><a class="nav-link" href="login.html">Log in</a></li>
-                    <li class="nav-item"></li>
-                </ul><a class="btn btn-secondary shadow" role="button" href="signup.html">Sign up</a>
+                    <li class="nav-item"><a class="nav-link active" href="products.html" th:href="@{/product/list(customerId=${customerId})}">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shopping-cart.html" th:href="@{/user/{customerId}/basket(customerId=(${customerId == null} ? 0 : ${customerId}))}">Shopping Cart</a></li>
+                    <li class="nav-item" th:switch="${customerSession?.status}">
+                        <a class="nav-link" href="index.html" th:href="@{'/user/auth/logout?customerId=' + ${customerSession?.customerId}}" th:case="'Logged In'">Log Out</a>
+                        <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="'Guest'">Log In</a>
+                        <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="*">Log In</a>
+                    </li>
+                </ul><a class="btn btn-secondary shadow" role="button" href="signup.html" th:href="@{/user/signup}" th:unless="${customerSession?.status == 'Logged In'}">Sign up</a>
             </div>
         </div>
     </nav><!-- End: Navbar Centered Links -->
@@ -49,196 +73,40 @@
                                             <div class="ref-product-info">
                                                 <h5 class="ref-name">Piggy Bank</h5>
                                                 <p class="ref-excerpt">Itaque id quidem aperiam perspiciatis unde natus voluptates.</p>
-                                            </div><strong class="ref-price ref-on-sale"><s class="ref-original-price">$100.00</s>$42.23</strong>
+                                            </div><strong class="ref-price ref-on-sale"><s class="ref-original-price">₹500.00</s>₹350.00</strong>
                                             <div class="ref-addons">
                                                 <a class="ref-button preview-toggle" href="#">Add to Cart</a>
                                             </div>
                                         </a>
                                     </div>
 
-                                    <a class="ref-product" href="/product.html?product=505747444">
-                                        <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-29_md.jpg" loading="lazy" /></div>
-                                        <div class="ref-product-data">
-                                            <div class="ref-product-info">
-                                                <h5 class="ref-name">Smart Watch</h5>
-                                                <p class="ref-excerpt">Ducimus iure ut aut odit voluptates similique in.</p>
-                                            </div><strong class="ref-price">$13.58</strong>
-                                        </div>
-                                        <div class="ref-addons">
-                                            <a class="ref-button preview-toggle" href="#">Add to Cart</a>
-                                        </div>
-                                    </a>
-                                    <a class="ref-product" href="/product.html?product=326414015">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-28_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Sneakers</h5>
-                                            <p class="ref-excerpt">Similique odio accusantium praesentium vitae enim voluptates et.</p>
-                                        </div><strong class="ref-price">$8.02</strong>
+                                    <div class="ref-product-data" th:each="product: ${products}">
+                                        <form method="post" th:action="@{/user/{customerId}/basket/{basketId}(customerId=${customerId},basketId=${basket?.basketId})}" th:object="${productQuantity}">
+                                            <a class="ref-product">
+                                                <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-30_md.jpg" th:src="${product?.productImageUrl}" loading="lazy" />
+                                                    <div class="ref-promo-badge" th:text="${product?.status}">SALE</div>
+                                                </div>
+                                                <div class="ref-product-info">
+                                                    <a href="/product/0" th:href="@{/product/{productId}(productId=(${product?.productId == null} ? 0 : ${product?.productId}))}"><h5 class="ref-name" th:text="${product?.productName}">Piggy Bank</h5></a>
+                                                    <p class="ref-excerpt" th:text="${product?.productDescription}">Itaque id quidem aperiam perspiciatis unde natus voluptates.</p>
+                                                </div>
+                                                <strong class="ref-price ref-on-sale" th:text="${product?.price}">₹350.00</strong>
+                                                <span data-reflow-type="add-to-cart" data-reflow-addtocart-text="" data-reflow-quantity="3">
+                                                    <div class="reflow-add-to-cart ref-product-controls">
+                                                            <span data-reflow-max-qty="999" data-reflow-min-qty="0" data-reflow-quantity="3">
+                                                                <div class="ref-quantity-widget">
+                                                                    <div class="ref-decrease" onclick="setQuantity('down');"><span></span></div>
+                                                                    <input type="hidden" name="productId" value="0" th:value="${product?.productId}">
+                                                                    <input type="text" name="quantity" id="quantity" value="1">
+                                                                    <div class="ref-increase" onclick="setQuantity('up');"><span></span></div>
+                                                                </div>
+                                                            </span>
+                                                            <button type="submit" class="ref-button">Add to Cart</button>
+                                                    </div>
+                                                </span>
+                                            </a>
+                                        </form>
                                     </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=138824058">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-27_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Vintage Camera</h5>
-                                            <p class="ref-excerpt">Quia neque sed aut saepe.</p>
-                                        </div><strong class="ref-price">$36.95</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=2106712069">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-26_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Tea Cup</h5>
-                                            <p class="ref-excerpt">Facere vel autem ullam deserunt laboriosam eius eligendi.</p>
-                                        </div><strong class="ref-price">$1.54</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1927510720">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-25_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Game Boy</h5>
-                                            <p class="ref-excerpt">Molestiae molestiae impedit sint earum commodi eveniet voluptate quod.</p>
-                                        </div><strong class="ref-price">$7.41</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1715279243">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-24_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Cruiser</h5>
-                                            <p class="ref-excerpt">Ut odit est aut non a voluptas.</p>
-                                        </div><strong class="ref-price">$4.79</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1527557206">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-23_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Controller</h5>
-                                            <p class="ref-excerpt">Quae in quo quos aliquid numquam.</p>
-                                        </div><strong class="ref-price">$36.83</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1348355857">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-22_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Vintage Phone</h5>
-                                            <p class="ref-excerpt">Rerum tenetur sit modi eum ea sint autem.</p>
-                                        </div><strong class="ref-price">$5.44</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1168761308">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-21_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Vintage Clock</h5>
-                                            <p class="ref-excerpt">Praesentium illum dolores odio qui accusamus distinctio.</p>
-                                        </div><strong class="ref-price">$13.86</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=989559015">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-20_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Notepad</h5>
-                                            <p class="ref-excerpt">Tempora rem ut officiis velit.</p>
-                                        </div><strong class="ref-price">$16.01</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=802493346">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-19_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Cup</h5>
-                                            <p class="ref-excerpt">Enim perspiciatis vel est.</p>
-                                        </div><strong class="ref-price">$46.18</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=589605485">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-18_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Reusable Cup</h5>
-                                            <p class="ref-excerpt">Aliquid omnis deleniti est quibusdam qui.</p>
-                                        </div><strong class="ref-price">$32.73</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=410404136">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-17_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Ambulance Toy</h5>
-                                            <p class="ref-excerpt">Totam rerum consequatur sunt quia culpa excepturi.</p>
-                                        </div><strong class="ref-price">$4.60</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=222420979">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-16_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Sunglasses</h5>
-                                            <p class="ref-excerpt">Ea ut vero et et.</p>
-                                        </div><strong class="ref-price">$23.25</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=43218622">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-15_md.jpg" loading="lazy" />
-                                        <div class="ref-promo-badge">SALE</div>
-                                    </div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Radio</h5>
-                                            <p class="ref-excerpt">Porro ut non sed maxime sapiente ipsa voluptas.</p>
-                                        </div><strong class="ref-price ref-on-sale"><s class="ref-original-price">$100.00</s>$48.57</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=2012025209">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-14_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Oxford Shoes</h5>
-                                            <p class="ref-excerpt">Quia est eum voluptas molestias esse alias.</p>
-                                        </div><strong class="ref-price">$27.56</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1799137284">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-13_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Clock</h5>
-                                            <p class="ref-excerpt">Facere laudantium consequatur consequatur incidunt quas repellat voluptatum.</p>
-                                        </div><strong class="ref-price">$45.02</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1611547343">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-12_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Headphones</h5>
-                                            <p class="ref-excerpt">Nihil omnis debitis nemo voluptatem autem.</p>
-                                        </div><strong class="ref-price">$5.67</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a><a class="ref-product" href="/product.html?product=1431952778">
-                                    <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-11_md.jpg" loading="lazy" /></div>
-                                    <div class="ref-product-data">
-                                        <div class="ref-product-info">
-                                            <h5 class="ref-name">Earrings</h5>
-                                            <p class="ref-excerpt">Quia dolores maiores est enim minima sapiente sit.</p>
-                                        </div><strong class="ref-price">$8.15</strong>
-                                    </div>
-                                    <div class="ref-addons"><a class="ref-button preview-toggle" href="#">Add to Cart</a></div>
-                                </a></div>
-                                <div class="ref-product-preview">
-                                    <div class="ref-product-preview-header">
-                                        <div class="ref-title"></div>
-                                        <div class="ref-close-button">×</div>
-                                    </div>
-                                    <div class="ref-product-preview-content"></div>
                                 </div>
                             </div>
                         </div>
@@ -304,6 +172,7 @@
     <script src="../static/assets/js/bs-init.js" th:src="@{/assets/js/bs-init.js}"></script>
     <script src="../static/assets/js/bold-and-bright.js" th:src="@{/assets/js/bold-and-bright.js}"></script>
     <script src="../static/assets/js/toolkit.min.js" th:src="@{/assets/js/toolkit.min.js}" data-testmode="true"></script>
+    <script src="../static/assets/js/glightbox.min.js" th:src="@{/assets/js/glightbox.min.js}"></script>
 </body>
 
 </html>

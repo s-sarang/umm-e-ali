@@ -1,9 +1,12 @@
 package com.ummeali.herbal.basket;
 
+import com.ummeali.herbal.products.Product;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
@@ -24,7 +27,7 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer basketId; // Unique identifier for a basket.
     private Integer customerId; // User associated with the basket.
-    @OneToMany
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
     private List<ProductQuantity> productQuantity; // Product and quantity put in the basket by user.
     private String status; // Status of basket, e.g. Pending (which means the basket has yet to be checked out by user) or Paid (which means the basked is now closed and it is no longer modifiable).
 

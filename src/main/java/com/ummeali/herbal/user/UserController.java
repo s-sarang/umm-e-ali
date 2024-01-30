@@ -1,6 +1,7 @@
 package com.ummeali.herbal.user;
 
 import com.ummeali.herbal.Navigate;
+import com.ummeali.herbal.session.SessionManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class UserController {
 
+    private SessionManager sessionManager;
+
     private UserService service;
 
-    public UserController(UserService service){
+    public UserController(SessionManager sessionManager, UserService service){
+        this.sessionManager = sessionManager;
         this.service = service;
     }
 
@@ -24,8 +28,8 @@ public class UserController {
 
     @PostMapping("/create")
     public String create(Model model, Customer customer) {
-        final int customerId = service.create(customer);
-        model.addAttribute("customerId", customerId);
+        service.create(customer);
+        sessionManager.verify(model, null);
         return Navigate.toLogin();
     }
 

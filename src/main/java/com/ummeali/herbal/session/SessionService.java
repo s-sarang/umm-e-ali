@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SessionService {
 
+    private static final Integer GUEST_CUSTOMER_ID = 0;
     private CustomerRepository customerRepository;
     private SessionRepository sessionRepository;
 
@@ -17,10 +18,12 @@ public class SessionService {
     }
 
     public Session guestSession(){
-        sessionRepository.save(Session.builder()
-                .customerId(0)
-                .status("Guest")
-                .build());
+        if(!sessionRepository.existsByCustomerId(GUEST_CUSTOMER_ID)){
+            sessionRepository.save(Session.builder()
+                    .customerId(GUEST_CUSTOMER_ID)
+                    .status("Guest")
+                    .build());
+        }
         return sessionRepository.findByCustomerId(0);
     }
 
@@ -48,5 +51,9 @@ public class SessionService {
         }
         sessionRepository.deleteByCustomerId(customerId);
         return guestSession();
+    }
+
+    public Session getSession(Integer customerId){
+        return sessionRepository.findByCustomerId(customerId);
     }
 }

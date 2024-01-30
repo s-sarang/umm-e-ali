@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Integer> {
     Session findByCustomerId(Integer customerId);
+    boolean existsByCustomerId(Integer customerId);
     void deleteByCustomerId(Integer customerId);
 }
