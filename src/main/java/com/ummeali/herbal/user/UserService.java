@@ -39,7 +39,7 @@ public class UserService {
      *
      * @param customer
      */
-    public void update(Customer customer){
+    public Customer update(Customer customer){
         Customer updatedCustomer = get(customer.getCustomerId()); // Retrieve user and update details.
         updatedCustomer.setTitle(customer.getTitle());
         updatedCustomer.setFirstName(customer.getFirstName());
@@ -54,7 +54,7 @@ public class UserService {
         updatedCustomer.setAddressLine2(customer.getAddressLine2());
         updatedCustomer.setAddressLine3(customer.getAddressLine3());
         updatedCustomer.setCountry(customer.getCountry());
-        customerRepository.save(updatedCustomer); // Save user with updated details.
+        return customerRepository.save(updatedCustomer); // Save user with updated details.
     }
 
     /**

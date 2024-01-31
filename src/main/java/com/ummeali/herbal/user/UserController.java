@@ -5,6 +5,7 @@ import com.ummeali.herbal.session.SessionManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,6 +27,11 @@ public class UserController {
         return Navigate.toSignUpForm();
     }
 
+    @GetMapping("/contacts")
+    public String contacts() {
+        return Navigate.toContactUs();
+    }
+
     @PostMapping("/create")
     public String create(Model model, Customer customer) {
         service.create(customer);
@@ -34,16 +40,19 @@ public class UserController {
     }
 
     @GetMapping("/{customerId}")
-    public String showUserDetailsForm(Model model, Integer customerId) {
+    public String showUserDetailsForm(Model model, @PathVariable Integer customerId) {
         final Customer customer = service.get(customerId);
-        model.addAttribute("user", customer);
-        return "edit-user-details";
+        sessionManager.verify(model, customerId);
+        model.addAttribute("customer", customer);
+        return Navigate.toProfile();
     }
 
-    /*@PostMapping("/{userId}/edit")
-    public String update(Model model, @PathVariable Integer userId, User user){
-        final User user = service.update(user);
-
-    }*/
+    @PostMapping("/{customerId}/edit")
+    public String update(Model model, @PathVariable Integer customerId, Customer user){
+        final Customer customer = service.update(user);
+        sessionManager.verify(model, customerId);
+        model.addAttribute("customer", customer);
+        return Navigate.toProfile();
+    }
 
 }

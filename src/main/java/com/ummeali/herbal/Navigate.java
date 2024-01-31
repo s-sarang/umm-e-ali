@@ -21,12 +21,14 @@ public class Navigate {
     }
 
     public static final String toProfile() {
-        return "user/profile";
+        return "customer-settings";
     }
 
     public static final String toBasket() {
         return "shopping-cart";
     }
+
+    public static final String toContactUs() { return "contacts"; }
 
     public static final String toPayments() {
         return "payment";

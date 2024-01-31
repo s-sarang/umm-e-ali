@@ -3,13 +3,17 @@ package com.ummeali.herbal.basket;
 import com.ummeali.herbal.Navigate;
 import com.ummeali.herbal.products.ProductService;
 import com.ummeali.herbal.session.SessionManager;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.net.http.HttpHeaders;
 
 @Controller
 @RequestMapping("/user")
@@ -41,10 +45,11 @@ public class BasketController {
     }
 
     @PostMapping("/{customerId}/basket/{basketId}")
-    public String update(Model model, @PathVariable Integer customerId, @PathVariable Integer basketId, ProductQuantity productQuantity){
+    public String update(Model model, HttpServletRequest request, @PathVariable Integer customerId, @PathVariable Integer basketId, ProductQuantity productQuantity){
         Basket basket = service.update(basketId, customerId, productQuantity.getProductId(), productQuantity.getQuantity());
         sessionManager.verify(model, customerId);
         model.addAttribute("checkoutItems", service.getCheckoutItems(basket));
-        return Navigate.toProducts();
+        final String requestOrigin = request.getHeader("referer");
+        return requestOrigin.contains("basket") ? Navigate.toBasket() : "redirect:/product/list";
     }
 }

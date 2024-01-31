@@ -88,7 +88,7 @@ public class BasketService {
      * @param productId
      * @param quantity
      */
-    public Basket update(int basketId, final int userId, final int productId, final int quantity){
+    public Basket update(int basketId, int userId, int productId, int quantity){
         Basket userBasket = get(userId);
         if("Paid".equals(userBasket.getStatus())){ // Check basket status. If basket status is Paid, that means the user has checked out and the basket can no longer be modified.
             throw new RuntimeException("The basket is already checked out.");
@@ -106,7 +106,7 @@ public class BasketService {
             }else{
                 productsInBasket.forEach(productQuantity -> {
                     if(productId == productQuantity.getProductId()){
-                        productQuantity.setQuantity(productQuantity.getQuantity() + quantity);
+                        productQuantity.setQuantity(quantity);
                     }
                 });
             }

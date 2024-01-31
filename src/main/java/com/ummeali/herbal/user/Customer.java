@@ -202,7 +202,7 @@ public class Customer {
         if(this.getEmailId() == null){
             throw new IllegalArgumentException("Email Id is required.");
         }
-        if(this.getFirstName() == null){
+        if(this.getPassword() == null){
             throw new IllegalArgumentException("Password is required.");
         }
     }

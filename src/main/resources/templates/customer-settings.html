@@ -4,27 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Products - Brand</title>
+    <title>Log in - Brand</title>
     <link rel="stylesheet" href="../static/assets/bootstrap/css/bootstrap.min.css" th:href="@{/assets/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../static/assets/css/toolkit.min.css" th:href="@{/assets/css/toolkit.min.css}">
     <link rel="stylesheet" href="../static/assets/css/Inter.css" th:href="@{/assets/css/Inter.css}">
-    <link rel="stylesheet" href="../static/assets/css/glightbox.min.css" th:href="@{/assets/css/glightbox.min.css}">
-    <script>
-        function setQuantity(upordown, productQuantity) {
-            var quantity = document.getElementById(productQuantity);
-
-            if (quantity.value > 1) {
-                if (upordown == 'up'){++document.getElementById(productQuantity).value;}
-                else if (upordown == 'down'){--document.getElementById(productQuantity).value;}}
-            else if (quantity.value == 1) {
-                if (upordown == 'up'){++document.getElementById(productQuantity).value;}}
-            else
-            {document.getElementById(productQuantity).value=1;}
-        }
-    </script>
 </head>
 
 <body>
+
     <div>
         <p th:text="'Customer Session: ' + ${customerSession}"></p>
         <p th:text="'Customer Id: ' + ${customerId}"></p>
@@ -37,10 +24,10 @@
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="index.html" th:href="@{/store/home}"><img class="rounded-circle img-fluid" src="../static/assets/img/brands/ua-herbal-logo.jpeg" th:src="@{/assets/img/brands/ua-herbal-logo.jpeg}" width="55" height="55"><span class="text-secondary" style="padding: 25px;">UA Herbal</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="products.html" th:href="@{/product/list(customerId=${customerId})}">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html" th:href="@{/product/list(customerId=${customerId})}">Products</a></li>
                     <li class="nav-item"><a class="nav-link" href="shopping-cart.html" th:href="@{/user/{customerId}/basket(customerId=(${customerId == null} ? 0 : ${customerId}))}">Shopping Cart</a></li>
                     <li class="nav-item" th:switch="${customerSession?.status}">
-                        <a class="nav-link" href="customer-settings.html" th:href="@{/user/{customerId}(customerId=${customerSession?.customerId})}" th:case="'Logged In'">Profile</a>
+                        <a class="nav-link active" href="customer-settings.html" th:href="@{/user/{customerId}(customerId=customerSession?.customerId)}" th:case="'Logged In'">Profile</a>
                         <a class="nav-link" href="index.html" th:href="@{'/user/auth/logout?customerId=' + ${customerSession?.customerId}}" th:case="'Logged In'">Log Out</a>
                         <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="'Guest'">Log In</a>
                         <a class="nav-link" href="login.html" th:href="@{/user/auth/login}" th:case="*">Log In</a>
@@ -51,56 +38,68 @@
         </div>
     </nav><!-- End: Navbar Centered Links -->
     <section class="py-5">
-        <!-- Start: Team -->
         <div class="container py-5">
-            <div class="row mb-4 mb-lg-5">
-                <div class="col-md-8 col-xl-6 text-center mx-auto">
-                    <h2 class="fw-bold text-secondary">Products</h2>
-                </div>
-            </div>
-            <!-- List of Products start -->
-            <div class="row mx-auto">
-                <div class="text-secondary" data-reflow-type="product-list" data-reflow-layout="cards" data-reflow-order="date_desc">
-                    <div class="col">
-                            <div class="ref-test-mode-badge" title="Test Mode is enabled. The Reflow data displayed on the page is from your store&#39;s Test mode.
-    To view Live data, disable the reflow.js &quot;data-testmode&quot; attribute.">Test Mode</div>
-                            <div class="reflow-product-list ref-cards">
-                                <div class="ref-products">
-                                    <div class="ref-product-data" th:each="product: ${products}">
-                                        <form method="post" th:action="@{/user/{customerId}/basket/{basketId}(customerId=${customerId},basketId=${basket?.basketId})}" th:object="${productQuantity}">
-                                            <a class="ref-product">
-                                                <div class="ref-media"><img class="ref-image" src="https://cdn.bootstrapstudio.io/products/product-30_md.jpg" th:src="${product?.productImageUrl}" loading="lazy" />
-                                                    <div class="ref-promo-badge" th:text="${product?.status}">SALE</div>
-                                                </div>
-                                                <div class="ref-product-info">
-                                                    <a href="/product/0" th:href="@{/product/{productId}(productId=(${product?.productId == null} ? 0 : ${product?.productId}))}"><h5 class="ref-name" th:text="${product?.productName}">Piggy Bank</h5></a>
-                                                    <p class="ref-excerpt" th:text="${product?.productDescription}">Itaque id quidem aperiam perspiciatis unde natus voluptates.</p>
-                                                </div>
-                                                <strong class="ref-price ref-on-sale" th:text="${product?.price}">₹350.00</strong>
-                                                <span data-reflow-type="add-to-cart" data-reflow-addtocart-text="" data-reflow-quantity="3">
-                                                    <div class="reflow-add-to-cart ref-product-controls">
-                                                            <span data-reflow-max-qty="999" data-reflow-min-qty="0" data-reflow-quantity="3">
-                                                                <div class="ref-quantity-widget">
-                                                                    <div class="ref-decrease" th:data-product-id="${product?.productId + '-quantity'}" onclick="setQuantity('down', this.getAttribute('data-product-id'));"><span></span></div>
-                                                                    <input type="hidden" name="productId" value="0" th:value="${product?.productId}">
-                                                                    <input type="text" name="quantity" th:id="${product?.productId + '-quantity'}" value="1">
-                                                                    <!--<input type="text" name="quantity" th:id="${product?.productId + '-quantity'}" value="1" th:value="${form?.quantity != null} ? ${form.quantity} : '1'">-->
-                                                                    <div class="ref-increase" th:data-product-id="${product?.productId + '-quantity'}" onclick="setQuantity('up', this.getAttribute('data-product-id'));"><span></span></div>
-                                                                </div>
-                                                            </span>
-                                                            <button type="submit" class="ref-button">Add or Update Basket</button>
-                                                    </div>
-                                                </span>
-                                            </a>
-                                        </form>
+            <div data-reflow-type="user-settings">
+                <div class="reflow-user-settings">
+                    <div class="ref-auth-settings-signed" style="display: block;">
+                        <form class="ref-settings" method="post" data-bs-theme="light" th:action="@{/user/{customerId}/edit(customerId=${customerId})}" th:object="${customer}">
+                            <div>
+                                <h4>User Settings</h4>
+                            </div>
+                            <img class="ref-profile-photo" src="https://api.reflowhq.com/img/gravatar/default.png" />
+                            <div class="ref-setting ref-setting-photo"><label>
+                                <div class="ref-change-photo">Change Photo</div><input class="ref-photo-input" type="file" name="ref-profile-photo" accept="image/*" />
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Title</b></div>
+                                <input class="ref-form-control" type="text" name="title" th:value="${form?.title != null} ? ${form.title} : ${customer?.title}"/>
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>First Name</b></div>
+                                <input class="ref-form-control" type="text" name="firstName" th:value="${form?.firstName != null} ? ${form.firstName} : ${customer?.firstName}"/>
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Last Name</b></div>
+                                <input class="ref-form-control" type="text" name="lastName" th:value="${form?.lastName != null} ? ${form.lastName} : ${customer?.lastName}"/>
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Date of Birth</b></div>
+                                <input class="ref-form-control" type="text" name="dateOfBirth" th:value="${form?.dateOfBirth != null} ? ${form.dateOfBirth} : ${customer?.dateOfBirth}"/>
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Email</b></div><input class="ref-form-control" type="email" name="emailId" th:value="${form?.emailId != null} ? ${form.emailId} : ${customer?.emailId}" required />
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Password</b></div><input class="ref-form-control" type="password" name="password" th:value="${form?.password != null} ? ${form.password} : ${customer?.password}" required />
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Phone</b></div><input class="ref-form-control" type="phone" name="telephone" th:value="${form?.telephone != null} ? ${form.telephone} : ${customer?.telephone}" pattern="[0-9\+\- ]{5,30}" />
+                            </label></div>
+                            <div class="ref-setting"><label>
+                                <div><b>Mobile</b></div><input class="ref-form-control" type="phone" name="mobile" th:value="${form?.mobile != null} ? ${form.mobile} : ${customer?.mobile}" pattern="[0-9\+\- ]{5,30}" />
+                            </label></div>
+                            <div class="ref-setting ref-address-settings">
+                                <div><b>Delivery Address</b></div>
+                                <div class="ref-address-holder">
+                                    <div class="ref-address-widget">
+                                        <label><span>Address Line 1</span>
+                                            <input class="ref-form-control ref-field-details-address-line" type="text" name="addressLine1" th:value="${form?.addressLine1 != null} ? ${form.addressLine1} : ${customer?.addressLine1}"/>
+                                            <span>Address Line 2</span>
+                                            <input class="ref-form-control ref-field-details-address-line" type="text" name="addressLine2" th:value="${form?.addressLine2 != null} ? ${form.addressLine2} : ${customer?.addressLine2}"/>
+                                            <span>Address Line 3</span>
+                                            <input class="ref-form-control ref-field-details-address-line" type="text" name="addressLine3" th:value="${form?.addressLine3 != null} ? ${form.addressLine3} : ${customer?.addressLine3}"/>
+                                            <span>Country</span>
+                                            <input class="ref-form-control ref-field-details-address-line" type="text" name="country" th:value="${form?.country != null} ? ${form.country} : ${customer?.country}"/>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="mb-3"><button class="btn btn-secondary shadow d-block w-100" type="submit">Update</button></div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <!-- List of Products end -->
-        </div><!-- End: Team -->
+        </div>
     </section><!-- Start: Footer Multi Column -->
     <footer class="bg-primary-gradient">
         <div class="container py-4 py-lg-5">
@@ -123,15 +122,6 @@
                         <li><a href="#">Legacy</a></li>
                     </ul>
                 </div><!-- End: About -->
-                <!-- Start: Careers -->
-                <div class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column">
-                    <h3 class="fs-6 fw-bold">Careers</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Job openings</a></li>
-                        <li><a href="#">Employee success</a></li>
-                        <li><a href="#">Benefits</a></li>
-                    </ul>
-                </div><!-- End: Careers -->
                 <!-- Start: Social Icons -->
                 <div class="col-lg-3 text-center text-lg-start d-flex flex-column align-items-center order-first align-items-lg-start order-lg-last">
                     <div class="fw-bold d-flex align-items-center mb-2"><span class="bs-icon-sm bs-icon-circle bs-icon-primary d-flex justify-content-center align-items-center bs-icon me-2"><img class="rounded-circle" src="../static/assets/img/brands/ua-herbal-logo.jpeg" th:src="@{/assets/img/brands/ua-herbal-logo.jpeg}" width="25" height="25"></span><span>UA Herbal</span></div>
@@ -155,9 +145,7 @@
     </footer><!-- End: Footer Multi Column -->
     <script src="../static/assets/bootstrap/js/bootstrap.min.js" th:src="@{/assets/bootstrap/js/bootstrap.min.js}"></script>
     <script src="../static/assets/js/bs-init.js" th:src="@{/assets/js/bs-init.js}"></script>
-    <script src="../static/assets/js/bold-and-bright.js" th:src="@{/assets/js/bold-and-bright.js}"></script>
-    <script src="../static/assets/js/toolkit.min.js" th:src="@{/assets/js/toolkit.min.js}" data-testmode="true"></script>
-    <script src="../static/assets/js/glightbox.min.js" th:src="@{/assets/js/glightbox.min.js}"></script>
+    <script src="../static/assets/js/bold-and-bright.js" th:src="@{/static/assets/js/bold-and-bright.js}"></script>
 </body>
 
 </html>
